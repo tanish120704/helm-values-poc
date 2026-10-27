@@ -4,6 +4,11 @@ global:
     name: "default-tenant"
     domain: "default-tenant.example.com"
 
+# Defaults for the umbrella chart's own templates/ directory.
+platform:
+  supportEmail: "support@example.com"
+  featureEnabled: false
+
 # Keys match the dependency names in Chart.yaml.
 # Inside each subchart, these become .Values.message and .Values.settings.*.
 service-a:

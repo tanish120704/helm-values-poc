@@ -1,8 +1,8 @@
 apiVersion: v2
 name: helm-values-poc
-description: Demonstrates parent values overriding two local subcharts.
+description: Demonstrates umbrella defaults and tenant overrides across root templates and two subcharts.
 type: application
-version: 0.2.0
+version: 0.3.0
 dependencies:
   - name: service-a
     version: 0.1.0

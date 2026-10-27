@@ -8,6 +8,8 @@ under keys matching the dependency names in `Chart.yaml`.
 .
 ├── Chart.yaml
 ├── values.yaml
+├── templates/
+│   └── tenant-config.yaml
 └── charts/
     ├── service-a/
     │   ├── Chart.yaml
@@ -92,3 +94,35 @@ helm template tenant-one . -f ../argocd-gitops-poc/tenants/tenant-one/values.yam
 
 This POC renders two ConfigMaps, not running service containers. Tenant identity
 is visible in both ConfigMaps; tenant domains do not provision DNS or ingress.
+
+## Umbrella-level templates and root values
+
+`templates/tenant-config.yaml` belongs to the parent chart. It reads
+`.Values.platform.supportEmail` and `.Values.platform.featureEnabled` from
+the root `values.yaml`, plus `.Values.global.tenant` for tenant identity.
+The rendered `<release>-platform` ConfigMap accompanies both service ConfigMaps.
+
+Tenant files can override these ordinary root keys alongside service settings:
+
+```yaml
+global:
+  tenant:
+    name: tenant-b
+    domain: tenant-b.example.com
+platform:
+  supportEmail: support@tenant-b.example.com
+  featureEnabled: true
+service-a:
+  settings:
+    logLevel: trace
+```
+
+Tenant One omits `platform`, so it inherits `support@example.com` and `false`.
+Tenant B overrides those values with `support@tenant-b.example.com` and `true`.
+Both root and subchart templates receive the tenant-specific global identity.
+Umbrella-only `platform` values are scoped to root templates; subcharts read
+their service settings and shared `global` values. ConfigMap data renders the
+boolean as a quoted string, including the inherited `"false"` value.
+
+The existing multi-source Argo CD ApplicationSet needs no changes: it already
+passes each tenant file to the entire umbrella chart.
