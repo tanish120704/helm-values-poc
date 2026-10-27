@@ -1,0 +1,19 @@
+# Shared tenant identity is passed to both subcharts by Helm.
+global:
+  tenant:
+    name: "default-tenant"
+    domain: "default-tenant.example.com"
+
+# Keys match the dependency names in Chart.yaml.
+# Inside each subchart, these become .Values.message and .Values.settings.*.
+service-a:
+  message: "Service A overridden by the parent chart"
+  settings:
+    environment: "poc"
+    logLevel: "debug"
+
+service-b:
+  message: "Service B overridden by the parent chart"
+  settings:
+    environment: "poc"
+    logLevel: "warn"

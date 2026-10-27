@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" }}
+data:
+  message: {{ .Values.message | quote }}
+  environment: {{ .Values.settings.environment | quote }}
+  logLevel: {{ .Values.settings.logLevel | quote }}
+  tenantName: {{ .Values.global.tenant.name | quote }}
+  tenantDomain: {{ .Values.global.tenant.domain | quote }}

@@ -1,0 +1,9 @@
+global:
+  tenant:
+    name: "default-tenant"
+    domain: "default-tenant.example.com"
+
+message: "Service B default message"
+settings:
+  environment: "development"
+  logLevel: "error"

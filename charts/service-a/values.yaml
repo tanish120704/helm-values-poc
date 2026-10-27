@@ -1,0 +1,9 @@
+global:
+  tenant:
+    name: "default-tenant"
+    domain: "default-tenant.example.com"
+
+message: "Service A default message"
+settings:
+  environment: "development"
+  logLevel: "info"
