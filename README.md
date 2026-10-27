@@ -21,7 +21,7 @@ benchmark. Domains and external URLs are illustrative; no DNS or ingress is crea
 - No credentials or real secrets belong in these values or ConfigMaps.
 
 ```text
-Chart.yaml                     # 50 local dependencies; umbrella version 0.4.0
+Chart.yaml                     # 50 local dependencies; umbrella version 0.5.0
 values.yaml                    # Umbrella defaults and service parent overrides
 values.schema.json             # Umbrella configuration validation
 charts/
@@ -136,3 +136,29 @@ cause deployments.
 The original root chart remains usable as a full 56-resource umbrella baseline;
 the separate `umbrella-tenant` Application still uses it. Both repos track `main`
 for this POC; controlled production promotion is a separate concern.
+
+## Internal Foundation sync waves
+
+Foundation's `values.yaml` assigns service waves for every tenant:
+`service-a: 0`, `service-b: 1`, then `service-03: 2` through `service-12: 11`.
+Its six standalone templates render wave `-1`, so shared configuration is applied
+first. Other groups retain their existing default wave behavior. The root
+umbrella chart continues to use default service wave `0`; no Foundation-specific
+service sequence is injected into that separate baseline.
+
+Foundation service charts expose an integer `syncWave` default of `0`; values
+schemas reject non-integers and negative service waves. Templates put that value
+in `metadata.annotations.argocd.argoproj.io/sync-wave`. It is deployment metadata,
+not part of the ConfigMap's application `config.json` data. An existing tenant
+file can deliberately override a service wave, e.g. `service-b.syncWave: 3`.
+Root values and the current tenant values files have not been changed.
+
+The fixture generator discovers Foundation membership from its group dependency
+list and maintains wave support on those subcharts. Standalone root-template
+annotations are conditional on being rendered by the Foundation chart.
+
+Argo CD orders waves during a normal Application sync and waits on resource
+health. Unchanged healthy earlier waves are not restarted. This ConfigMap POC
+verifies annotations and resource application order only. Real service startup
+ordering requires Deployments and readiness probes that express actual readiness;
+services still need runtime retries when dependencies fail later.

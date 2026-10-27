@@ -2,4 +2,4 @@ apiVersion: v2
 name: service-05
 description: service-05 configuration-only subchart
 type: application
-version: 0.2.0
+version: 0.3.0

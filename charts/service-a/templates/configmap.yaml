@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .Values.syncWave | quote }}
   labels:
     poc.example.com/role: service
     poc.example.com/service: {{ .Chart.Name | quote }}

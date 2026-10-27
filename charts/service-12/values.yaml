@@ -52,3 +52,4 @@ integrations:
   export:
     enabled: true
     format: json
+syncWave: 0

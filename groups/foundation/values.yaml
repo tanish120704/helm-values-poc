@@ -1,3 +1,26 @@
-# Shared defaults come from the repository root values.yaml.
-# Argo CD loads those first, followed by the tenant values file.
-{}
+# Shared internal order for every tenant Foundation Application.
+# Configuration resources use wave -1; services follow in waves 0-11.
+service-a:
+  syncWave: 0
+service-b:
+  syncWave: 1
+service-03:
+  syncWave: 2
+service-04:
+  syncWave: 3
+service-05:
+  syncWave: 4
+service-06:
+  syncWave: 5
+service-07:
+  syncWave: 6
+service-08:
+  syncWave: 7
+service-09:
+  syncWave: 8
+service-10:
+  syncWave: 9
+service-11:
+  syncWave: 10
+service-12:
+  syncWave: 11

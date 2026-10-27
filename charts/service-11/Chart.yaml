@@ -2,4 +2,4 @@ apiVersion: v2
 name: service-11
 description: service-11 configuration-only subchart
 type: application
-version: 0.2.0
+version: 0.3.0

@@ -27,7 +27,7 @@ def verify(tenant_file, release, documents):
     for name in names:
         values=merge(merge(load(ROOT/'charts'/name/'values.yaml'),parent.get(name,{})),tenant.get(name,{}))
         values['global']=merge(values.get('global',{}),effective['global'])
-        expected[release+'-'+name]={'tenant':values['global']['tenant'],**{k:v for k,v in values.items() if k!='global'}}
+        expected[release+'-'+name]={'tenant':values['global']['tenant'],**{k:v for k,v in values.items() if k not in ('global','syncWave')}}
     for section in sections:
         expected[release+'-'+section]={'tenant':effective['global']['tenant'],'settings':effective[section]}
     actual={doc['metadata']['name']:doc for doc in documents if doc and doc.get('kind')=='ConfigMap' and 'config.json' in doc.get('data',{})}

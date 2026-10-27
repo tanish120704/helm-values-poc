@@ -2,6 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ printf "%s-integrations" .Release.Name | trunc 63 | trimSuffix "-" }}
+  {{- if eq .Chart.Name "foundation" }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  {{- end }}
   labels:
     poc.example.com/role: umbrella
     poc.example.com/section: integrations
