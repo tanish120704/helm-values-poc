@@ -2,7 +2,7 @@ apiVersion: v2
 name: foundation
 description: Direct Helm entry point for the foundation service group
 type: application
-version: 0.4.0
+version: 0.4.1
 dependencies:
 - name: service-a
   version: 0.3.0
