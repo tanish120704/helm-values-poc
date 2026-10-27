@@ -30,6 +30,8 @@ spec:
     namespace: {{ printf "tenant-%s" $.Release.Name }}
   syncPolicy:
     automated:
+      # Pause leaf reconciliation during the return to group ownership.
+      enabled: false
       prune: true
       selfHeal: true
       allowEmpty: false
