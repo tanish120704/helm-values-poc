@@ -1,3 +1,18 @@
-# Shared defaults come from the repository root values.yaml.
-# Argo CD loads those first, followed by the tenant values file.
-{}
+# Platform-owned membership; no service chart dependencies.
+# Root defaults and tenant values are still loaded by the group Application.
+_services:
+- service-13
+- service-14
+- service-15
+- service-16
+- service-17
+- service-18
+- service-19
+- service-20
+- service-21
+- service-22
+- service-23
+- service-24
+- service-25
+_chartsRevision: refs/heads/main
+_serviceRevisions: {}

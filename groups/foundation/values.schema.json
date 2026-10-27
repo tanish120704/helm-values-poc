@@ -1,1 +1,47 @@
-../../values.schema.json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "_services",
+    "_chartsRevision",
+    "global"
+  ],
+  "properties": {
+    "_services": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^service-(a|b|[0-9]{2})$"
+      }
+    },
+    "_chartsRevision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "_serviceRevisions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "global": {
+      "type": "object",
+      "required": [
+        "tenant"
+      ],
+      "properties": {
+        "tenant": {
+          "type": "object",
+          "required": [
+            "name",
+            "domain"
+          ]
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -102,38 +102,48 @@ resulting files and commit both source and output. Tenant overrides are edited
 only in the GitOps repo. Verification does not import the generator: it reads
 the rendered resources and actual chart values independently.
 
-## Direct Helm group entry points
+## Service Application groups — no dependency bundles
 
-`groups/` adds four small umbrella charts without moving or changing any existing
-subcharts, root templates, or root values. Group dependencies reference the
-existing service charts through local `file://../../charts/<service>` paths.
-Standard `Chart.lock` files pin dependency metadata. Argo CD builds missing local
-dependencies automatically; for local use, run `helm dependency build` first.
+`groups/` contains four group charts. They have **no chart dependencies**:
+Service A and all other services remain independent charts under `charts/`.
+Group membership is listed in `groups/<group>/values.yaml` under `_services`.
 
-| Group | Services | Root templates |
+| Group | Member services | Direct configuration resources |
 | --- | --- | --- |
-| foundation | service-a, service-b, service-03 through service-12 | All six |
+| foundation | service-a, service-b, service-03 through service-12 | All six root templates |
 | core-platform | service-13 through service-25 | None |
 | product-services | service-26 through service-40 | None |
 | to-revisit | service-41 through service-50 | None |
 
-Foundation uses repository-local symbolic links to the six existing root
-templates. Their original files remain the single source of template content.
-The original root chart remains usable for a complete 56-resource render.
+A shared `groups/service-applications.yaml` template, reused by symbolic links,
+renders an Argo CD Application per service. Each Application points directly to
+`charts/<service>` and receives only its service-specific merged values plus
+`global`. Helm resolves the remaining defaults inside that standalone chart.
+The default service chart revision is `_chartsRevision`; `_serviceRevisions`
+can pin individual service chart revisions independently.
+
+Foundation also links to the six existing root templates. It directly owns those
+ConfigMaps while each leaf Application owns its service's resources. Standalone
+configuration uses default wave 0; service Application definitions use wave 1.
+There is no separate platform Application and no pre-rendering pipeline.
 
 ```sh
-helm dependency build groups/foundation
+# Renders service Application definitions plus Foundation's six ConfigMaps.
 helm template tenant-b groups/foundation -f values.yaml \
   -f ../argocd-gitops-poc/tenants/tenant-b/values.yaml
 ```
 
-The GitOps repository's parent Helm chart renders four child Applications. Each
-child renders its own group directly in Argo CD, loading root values followed by
-tenant values. There is no pre-rendered-manifest pipeline. Services retain the
-same values keys and Kubernetes resource names. A service change can change its
-group's rendered output; shared values used by several groups may affect all of
-them. Shared repositories can cause refreshes without manifest changes or syncs.
+Each group `.helmignore` excludes `charts/` to avoid accidentally rendering stale
+packages left by the previous dependency-bundle design. No group dependency build
+is needed. The original root chart remains available as a full 56-resource
+configuration baseline; its original defaults, subcharts, and root template
+content have not changed.
 
-Both repos track `main` for this POC; production version promotion is a separate
-concern. Group membership is defined by these four dependency lists, not a
-second service catalog or a custom generation tool.
+The GitOps repo's parent Helm chart creates the four groups. For 50 services,
+each tenant has 55 Applications total: one tenant parent, four groups, 50 leaves.
+Groups organize service ownership; each service has its own sync, health,
+chart revision, and Kubernetes resources. Shared Git changes can cause unrelated
+refreshes without manifest differences or deployments.
+
+Both repos track `main` for this POC; production release promotion and controller
+capacity for many tenants are separate concerns.

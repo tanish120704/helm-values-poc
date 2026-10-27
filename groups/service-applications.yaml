@@ -1,0 +1,38 @@
+{{- range $service := .Values._services }}
+{{- $serviceValues := deepCopy (index $.Values $service | default dict) }}
+{{- $_ := set $serviceValues "global" (deepCopy $.Values.global) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name $service }}
+  namespace: argocd
+  annotations:
+    # Foundation's standalone configuration uses the earlier default wave 0.
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    platform.example.com/tenant: {{ $.Release.Name | quote }}
+    platform.example.com/group: {{ $.Chart.Name | quote }}
+    platform.example.com/service: {{ $service | quote }}
+spec:
+  project: tenants
+  source:
+    repoURL: git@github.com:tanish120704/helm-values-poc.git
+    targetRevision: {{ index $.Values._serviceRevisions $service | default $.Values._chartsRevision | quote }}
+    path: {{ printf "charts/%s" $service | quote }}
+    helm:
+      # Preserve existing Kubernetes resource names despite the new App name.
+      releaseName: {{ $.Release.Name | quote }}
+      valuesObject:
+        {{- $serviceValues | toYaml | nindent 8 }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ printf "tenant-%s" $.Release.Name }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
