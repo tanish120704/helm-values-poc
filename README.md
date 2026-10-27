@@ -102,48 +102,37 @@ resulting files and commit both source and output. Tenant overrides are edited
 only in the GitOps repo. Verification does not import the generator: it reads
 the rendered resources and actual chart values independently.
 
-## Service Application groups — no dependency bundles
+## Four group Applications — services deployed directly
 
-`groups/` contains four group charts. They have **no chart dependencies**:
-Service A and all other services remain independent charts under `charts/`.
-Group membership is listed in `groups/<group>/values.yaml` under `_services`.
+`groups/` contains four umbrella charts. Each lists its service subcharts under
+`dependencies` in its `Chart.yaml`, using existing `charts/<service>` sources
+through local file dependencies. There are no service Application templates.
 
-| Group | Member services | Direct configuration resources |
+| Group | Services | Standalone root templates |
 | --- | --- | --- |
-| foundation | service-a, service-b, service-03 through service-12 | All six root templates |
+| foundation | service-a, service-b, service-03 through service-12 | All six |
 | core-platform | service-13 through service-25 | None |
 | product-services | service-26 through service-40 | None |
 | to-revisit | service-41 through service-50 | None |
 
-A shared `groups/service-applications.yaml` template, reused by symbolic links,
-renders an Argo CD Application per service. Each Application points directly to
-`charts/<service>` and receives only its service-specific merged values plus
-`global`. Helm resolves the remaining defaults inside that standalone chart.
-The default service chart revision is `_chartsRevision`; `_serviceRevisions`
-can pin individual service chart revisions independently.
-
-Foundation also links to the six existing root templates. It directly owns those
-ConfigMaps while each leaf Application owns its service's resources. Standalone
-configuration uses default wave 0; service Application definitions use wave 1.
-There is no separate platform Application and no pre-rendering pipeline.
+Foundation reuses the six existing root templates through repository-local
+symbolic links. Original subcharts, root defaults, schemas, and root template
+content are unchanged. Each group loads root defaults followed by tenant values.
 
 ```sh
-# Renders service Application definitions plus Foundation's six ConfigMaps.
+helm dependency build groups/foundation
 helm template tenant-b groups/foundation -f values.yaml \
   -f ../argocd-gitops-poc/tenants/tenant-b/values.yaml
 ```
 
-Each group `.helmignore` excludes `charts/` to avoid accidentally rendering stale
-packages left by the previous dependency-bundle design. No group dependency build
-is needed. The original root chart remains available as a full 56-resource
-configuration baseline; its original defaults, subcharts, and root template
-content have not changed.
+The GitOps parent creates exactly four group Applications per tenant. Each group
+directly owns its Kubernetes resources: Foundation 18 ConfigMaps, Core Platform
+13, Product Services 15, and To Revisit 10. There are five Applications per tenant
+including its parent. No extra platform Application, service Applications, or
+pre-rendering pipeline exists. Services share their group's sync/release boundary.
+Shared values may affect several groups; unrelated repository refreshes need not
+cause deployments.
 
-The GitOps repo's parent Helm chart creates the four groups. For 50 services,
-each tenant has 55 Applications total: one tenant parent, four groups, 50 leaves.
-Groups organize service ownership; each service has its own sync, health,
-chart revision, and Kubernetes resources. Shared Git changes can cause unrelated
-refreshes without manifest differences or deployments.
-
-Both repos track `main` for this POC; production release promotion and controller
-capacity for many tenants are separate concerns.
+The original root chart remains usable as a full 56-resource umbrella baseline;
+the separate `umbrella-tenant` Application still uses it. Both repos track `main`
+for this POC; controlled production promotion is a separate concern.

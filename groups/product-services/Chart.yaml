@@ -2,7 +2,7 @@ apiVersion: v2
 name: product-services
 description: Direct Helm entry point for the product-services service group
 type: application
-version: 0.1.0
+version: 0.3.0
 dependencies:
 - name: service-26
   version: 0.2.0
