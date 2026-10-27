@@ -1,0 +1,311 @@
+{
+  "type": "object",
+  "properties": {
+    "global": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "domain": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "tier": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "domain",
+            "id",
+            "region",
+            "tier",
+            "locale",
+            "timezone"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "tenant"
+      ],
+      "additionalProperties": true
+    },
+    "message": {
+      "type": "string"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "logLevel": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "logLevel",
+        "port",
+        "timeoutSeconds",
+        "allowedOrigins"
+      ],
+      "additionalProperties": false
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "replicas": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "repository",
+            "tag"
+          ],
+          "additionalProperties": false
+        },
+        "health": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "intervalSeconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "path",
+            "intervalSeconds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "replicas",
+        "workers",
+        "image",
+        "health"
+      ],
+      "additionalProperties": false
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "additionalProperties": false
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "requests",
+        "limits"
+      ],
+      "additionalProperties": false
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "cacheEnabled": {
+          "type": "boolean"
+        },
+        "searchEnabled": {
+          "type": "boolean"
+        },
+        "betaEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cacheEnabled",
+        "searchEnabled",
+        "betaEnabled"
+      ],
+      "additionalProperties": false
+    },
+    "retry": {
+      "type": "object",
+      "properties": {
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "backoffSeconds": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "maxAttempts",
+        "backoffSeconds"
+      ],
+      "additionalProperties": false
+    },
+    "tenantConfig": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "quota": {
+          "type": "object",
+          "properties": {
+            "maxUsers": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxProjects": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "maxUsers",
+            "maxProjects"
+          ],
+          "additionalProperties": false
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "displayName",
+        "quota",
+        "tags"
+      ],
+      "additionalProperties": false
+    },
+    "integrations": {
+      "type": "object",
+      "properties": {
+        "webhook": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "url"
+          ],
+          "additionalProperties": false
+        },
+        "export": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "format": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "format"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "webhook",
+        "export"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "global",
+    "message",
+    "settings",
+    "runtime",
+    "resources",
+    "features",
+    "retry",
+    "tenantConfig",
+    "integrations"
+  ],
+  "additionalProperties": false
+}

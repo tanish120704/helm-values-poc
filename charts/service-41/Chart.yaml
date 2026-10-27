@@ -1,0 +1,5 @@
+apiVersion: v2
+name: service-41
+description: service-41 configuration-only subchart
+type: application
+version: 0.2.0

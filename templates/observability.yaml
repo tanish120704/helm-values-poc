@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-observability" .Release.Name | trunc 63 | trimSuffix "-" }}
+  labels:
+    poc.example.com/role: umbrella
+    poc.example.com/section: observability
+data:
+  tenantName: {{ .Values.global.tenant.name | quote }}
+  tenantDomain: {{ .Values.global.tenant.domain | quote }}
+  config.json: |
+    {{- dict "tenant" .Values.global.tenant "settings" .Values.observability | toPrettyJson | nindent 4 }}

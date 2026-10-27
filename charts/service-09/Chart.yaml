@@ -1,0 +1,5 @@
+apiVersion: v2
+name: service-09
+description: service-09 configuration-only subchart
+type: application
+version: 0.2.0

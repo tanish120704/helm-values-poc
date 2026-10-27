@@ -2,3 +2,6 @@
 .gitignore
 .DS_Store
 README.md
+scripts/
+.venv/
+__pycache__/

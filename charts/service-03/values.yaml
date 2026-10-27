@@ -1,0 +1,54 @@
+global:
+  tenant:
+    name: default-tenant
+    domain: default-tenant.example.com
+    id: default
+    region: local
+    tier: standard
+    locale: en-IN
+    timezone: Asia/Kolkata
+message: service-03 subchart default
+settings:
+  environment: development
+  logLevel: info
+  port: 8003
+  timeoutSeconds: 15
+  allowedOrigins:
+  - https://default.example.com
+runtime:
+  replicas: 1
+  workers: 2
+  image:
+    repository: example/service-03
+    tag: 1.0.0
+  health:
+    path: /healthz
+    intervalSeconds: 10
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+features:
+  cacheEnabled: true
+  searchEnabled: false
+  betaEnabled: false
+retry:
+  maxAttempts: 3
+  backoffSeconds: 2
+tenantConfig:
+  displayName: Default workspace
+  quota:
+    maxUsers: 100
+    maxProjects: 10
+  tags:
+  - default
+integrations:
+  webhook:
+    enabled: false
+    url: https://hooks.example.com/default
+  export:
+    enabled: true
+    format: json

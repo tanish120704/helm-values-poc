@@ -1,128 +1,109 @@
-# Helm subchart values POC
+# 50-service Helm values POC
 
-This repository is a parent Helm chart with two local subcharts. Each subchart
-defines its own defaults. The parent's `values.yaml` overrides those defaults
-under keys matching the dependency names in `Chart.yaml`.
+This repository is an umbrella Helm chart with **50 application subcharts** and
+**six standalone umbrella templates**. Each tenant renders **56 ConfigMaps**.
+These are configuration snapshots, not running services or a workload capacity
+benchmark. Domains and external URLs are illustrative; no DNS or ingress is created.
+
+## What is included
+
+- Services: `service-a`, `service-b`, and `service-03` through `service-50`.
+- Every service has its own `Chart.yaml`, defaults, JSON schema, and template.
+- Service settings cover environment, logs, ports, timeouts, origins, replicas,
+  workers, image repository/tag, health checks, CPU/memory, feature flags,
+  retries, quotas, tags, webhooks, and exports.
+- Root `values.yaml` overrides selected subchart defaults for all 50 services.
+- Shared `global.tenant` includes name, domain, ID, region, tier, locale, timezone.
+- Root templates: platform, routing, notifications, observability, security,
+  integrations. Each has multiple nested defaults in root `values.yaml`.
+- Each ConfigMap exposes effective configuration as `data["config.json"]` plus
+  tenant identity fields. Existing service flat fields remain available.
+- No credentials or real secrets belong in these values or ConfigMaps.
 
 ```text
-.
-├── Chart.yaml
-├── values.yaml
-├── templates/
-│   └── tenant-config.yaml
-└── charts/
-    ├── service-a/
-    │   ├── Chart.yaml
-    │   ├── values.yaml
-    │   └── templates/configmap.yaml
-    └── service-b/
-        ├── Chart.yaml
-        ├── values.yaml
-        └── templates/configmap.yaml
+Chart.yaml                     # 50 local dependencies; umbrella version 0.4.0
+values.yaml                    # Umbrella defaults and service parent overrides
+values.schema.json             # Umbrella configuration validation
+charts/
+  service-a/                   # Plus service-b and service-03 ... service-50
+    Chart.yaml
+    values.yaml
+    values.schema.json
+    templates/configmap.yaml
+templates/
+  tenant-config.yaml           # Platform
+  routing.yaml
+  notifications.yaml
+  observability.yaml
+  security.yaml
+  integrations.yaml
+scripts/
+  generate.py                  # Reproducible source for generated chart files
+  verify.py                    # Local render and deployed configuration checks
+  requirements.txt
 ```
 
-Helm uses the case-sensitive filename `Chart.yaml` and loads subcharts from
-`charts/`. Both dependencies are included as source, so rendering requires no
-external chart repository or Kubernetes cluster.
+## Layering and GitOps
 
-## Render the parent chart
+For services: subchart defaults → parent service block → tenant service block.
+For umbrella templates: root defaults → tenant root block.
+Parent `global.tenant` is shared with every subchart and root template.
+Nested maps merge, supplied lists replace lists, and false/zero remain overrides.
+Values are configuration data; text containing Helm expressions is not evaluated.
 
-Run from this repository with Helm 3 or later:
+The private [GitOps repository](https://github.com/tanish120704/argocd-gitops-poc)
+contains tenant values and the ApplicationSet. Each tenant Application combines
+this chart with `tenants/<tenant-id>/values.yaml` from that repository. Commit
+and push changes; no manual tenant Application or Kubernetes apply is needed.
+
+- **Tenant One**: baseline identity; inherits all service and umbrella defaults.
+- **Tenant B**: customizes 10 services (`a`, `b`, `03`, `10`, `15`, `20`, `25`,
+  `30`, `40`, `50`) and all six umbrella sections; 40 services inherit defaults.
+- Service A demonstrates disabled cache, zero retries, image/replica changes,
+  nested resource overrides and quota overrides.
+- Service B demonstrates an empty origins list and an overridden webhook URL.
+- Umbrella integration events also demonstrate an explicit empty list.
+
+## Validate and inspect
+
+Requires Helm 3+, Python 3.9+, and the pinned Python dependency:
 
 ```sh
+python3 -m venv .venv
+.venv/bin/pip install -r scripts/requirements.txt
+.venv/bin/python scripts/generate.py --check
 helm lint . --with-subcharts
-helm template poc .
+helm template tenant-b . -f ../argocd-gitops-poc/tenants/tenant-b/values.yaml
+.venv/bin/python scripts/verify.py --release tenant-b \
+  --tenant-values ../argocd-gitops-poc/tenants/tenant-b/values.yaml
 ```
 
-The parent values file is loaded automatically; no `-f` flag is needed.
-The rendered ConfigMaps contain:
+The verifier independently merges the actual checked-in defaults and tenant
+values, then checks every effective field in all 56 ConfigMaps. It covers
+nested inheritance, list replacement, booleans, numeric zero, shared identity,
+and resource counts. JSON schemas reject misspelled fields and wrong types.
 
-| ConfigMap | message | environment | logLevel |
-| --- | --- | --- | --- |
-| poc-service-a | Service A overridden by the parent chart | poc | debug |
-| poc-service-b | Service B overridden by the parent chart | poc | warn |
-
-## Compare standalone subchart defaults
+Verify the deployed configuration with the same checks:
 
 ```sh
-helm template poc ./charts/service-a
-helm template poc ./charts/service-b
+kubectl --context colima -n tenant-tenant-b get configmaps -o json > /tmp/tenant-b-configmaps.json
+.venv/bin/python scripts/verify.py --release tenant-b \
+  --tenant-values ../argocd-gitops-poc/tenants/tenant-b/values.yaml \
+  --live-list /tmp/tenant-b-configmaps.json
 ```
 
-Standalone rendering uses each subchart's own `values.yaml`: the environment
-is `development`, and the messages are `Service A default message` and
-`Service B default message`. The log levels are `info` and `error`, respectively.
+Repeat for `tenant-one` / `tenant-tenant-one` to check inherited defaults.
 
-Within a subchart, templates read `.Values.message` and `.Values.settings.*`.
-Helm passes the parent's `service-a` or `service-b` section into that subchart's
-values scope; the subchart does not need to reference the parent chart directly.
+## Maintain this generated fixture
 
-To try another parent-level override:
+`scripts/generate.py` owns the generated chart metadata, values, schemas, and
+templates. Change that source and run `python scripts/generate.py`; review the
+resulting files and commit both source and output. Tenant overrides are edited
+only in the GitOps repo. Verification does not import the generator: it reads
+the rendered resources and actual chart values independently.
 
-```sh
-helm template poc . --set service-a.settings.logLevel=trace
-```
-
-Reference: [Helm chart structure and dependencies](https://helm.sh/docs/topics/charts/).
-
-## Tenant identity and GitOps
-
-The parent `values.yaml` defines shared service defaults and a default
-`global.tenant` identity. Both subcharts read `.Values.global.tenant.name` and
-`.Values.global.tenant.domain`. Helm shares the parent's `global` values with
-both subcharts automatically. Subcharts also have defaults for standalone use.
-
-Tenant files live in the separate
-[argocd-gitops-poc repository](https://github.com/tanish120704/argocd-gitops-poc)
-under `tenants/<tenant-id>/values.yaml`, for example:
-
-```yaml
-global:
-  tenant:
-    name: tenant-one
-    domain: tenant-one.example.com
-```
-
-That repository's ApplicationSet discovers tenant files and generates an
-Application per tenant, using this chart plus the tenant values file. The
-parent defaults load automatically; the tenant file overrides only its supplied
-keys. Tenant values may also override service-specific settings if needed.
-
-```sh
-helm template tenant-one . -f ../argocd-gitops-poc/tenants/tenant-one/values.yaml
-```
-
-This POC renders two ConfigMaps, not running service containers. Tenant identity
-is visible in both ConfigMaps; tenant domains do not provision DNS or ingress.
-
-## Umbrella-level templates and root values
-
-`templates/tenant-config.yaml` belongs to the parent chart. It reads
-`.Values.platform.supportEmail` and `.Values.platform.featureEnabled` from
-the root `values.yaml`, plus `.Values.global.tenant` for tenant identity.
-The rendered `<release>-platform` ConfigMap accompanies both service ConfigMaps.
-
-Tenant files can override these ordinary root keys alongside service settings:
-
-```yaml
-global:
-  tenant:
-    name: tenant-b
-    domain: tenant-b.example.com
-platform:
-  supportEmail: support@tenant-b.example.com
-  featureEnabled: true
-service-a:
-  settings:
-    logLevel: trace
-```
-
-Tenant One omits `platform`, so it inherits `support@example.com` and `false`.
-Tenant B overrides those values with `support@tenant-b.example.com` and `true`.
-Both root and subchart templates receive the tenant-specific global identity.
-Umbrella-only `platform` values are scoped to root templates; subcharts read
-their service settings and shared `global` values. ConfigMap data renders the
-boolean as a quoted string, including the inherited `"false"` value.
-
-The existing multi-source Argo CD ApplicationSet needs no changes: it already
-passes each tenant file to the entire umbrella chart.
+This deliberately retains one umbrella Application per tenant to exercise
+configuration merging. It does not implement deployment groups, release cohorts,
+or hundreds of tenants. Both repositories still track `main`, so shared chart
+changes affect all tenants. Split independently released groups and pin chart
+versions before adopting the production architecture discussed for larger scale.

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: service-47
+description: service-47 configuration-only subchart
+type: application
+version: 0.2.0

@@ -1,0 +1,614 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "global": {
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "domain": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "tier": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "domain",
+            "id",
+            "region",
+            "tier",
+            "locale",
+            "timezone"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "tenant"
+      ],
+      "additionalProperties": false
+    },
+    "platform": {
+      "type": "object",
+      "properties": {
+        "supportEmail": {
+          "type": "string"
+        },
+        "featureEnabled": {
+          "type": "boolean"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "sessionTimeoutSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maintenance": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        "branding": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string"
+            },
+            "primaryColor": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "theme",
+            "primaryColor"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "supportEmail",
+        "featureEnabled",
+        "displayName",
+        "sessionTimeoutSeconds",
+        "maintenance",
+        "branding"
+      ],
+      "additionalProperties": false
+    },
+    "routing": {
+      "type": "object",
+      "properties": {
+        "basePath": {
+          "type": "string"
+        },
+        "tlsEnabled": {
+          "type": "boolean"
+        },
+        "requestTimeoutSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cors": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "allowedOrigins": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowedMethods": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "enabled",
+            "allowedOrigins",
+            "allowedMethods"
+          ],
+          "additionalProperties": false
+        },
+        "rateLimit": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "requestsPerMinute": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "enabled",
+            "requestsPerMinute"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "basePath",
+        "tlsEnabled",
+        "requestTimeoutSeconds",
+        "cors",
+        "rateLimit"
+      ],
+      "additionalProperties": false
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "senderName": {
+          "type": "string"
+        },
+        "senderEmail": {
+          "type": "string"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "digest": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "hour": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "enabled",
+            "hour"
+          ],
+          "additionalProperties": false
+        },
+        "retry": {
+          "type": "object",
+          "properties": {
+            "maxAttempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "backoffSeconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "maxAttempts",
+            "backoffSeconds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "enabled",
+        "senderName",
+        "senderEmail",
+        "channels",
+        "digest",
+        "retry"
+      ],
+      "additionalProperties": false
+    },
+    "observability": {
+      "type": "object",
+      "properties": {
+        "logLevel": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "intervalSeconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "enabled",
+            "intervalSeconds"
+          ],
+          "additionalProperties": false
+        },
+        "tracing": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "sampleRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "enabled",
+            "sampleRate"
+          ],
+          "additionalProperties": false
+        },
+        "retentionDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "labels": {
+          "type": "object",
+          "properties": {
+            "team": {
+              "type": "string"
+            },
+            "environment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "team",
+            "environment"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "logLevel",
+        "metrics",
+        "tracing",
+        "retentionDays",
+        "labels"
+      ],
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "object",
+          "properties": {
+            "secureCookies": {
+              "type": "boolean"
+            },
+            "sameSite": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "secureCookies",
+            "sameSite"
+          ],
+          "additionalProperties": false
+        },
+        "passwordPolicy": {
+          "type": "object",
+          "properties": {
+            "minimumLength": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requireMfa": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "minimumLength",
+            "requireMfa"
+          ],
+          "additionalProperties": false
+        },
+        "audit": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "retentionDays": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "enabled",
+            "retentionDays"
+          ],
+          "additionalProperties": false
+        },
+        "allowedCidrs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "session",
+        "passwordPolicy",
+        "audit",
+        "allowedCidrs"
+      ],
+      "additionalProperties": false
+    },
+    "integrations": {
+      "type": "object",
+      "properties": {
+        "webhooks": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "enabled",
+            "timeoutSeconds",
+            "events"
+          ],
+          "additionalProperties": false
+        },
+        "exports": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "format": {
+              "type": "string"
+            },
+            "batchSize": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "enabled",
+            "format",
+            "batchSize"
+          ],
+          "additionalProperties": false
+        },
+        "externalApi": {
+          "type": "object",
+          "properties": {
+            "baseUrl": {
+              "type": "string"
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "baseUrl",
+            "timeoutSeconds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "webhooks",
+        "exports",
+        "externalApi"
+      ],
+      "additionalProperties": false
+    },
+    "service-a": {
+      "type": "object"
+    },
+    "service-b": {
+      "type": "object"
+    },
+    "service-03": {
+      "type": "object"
+    },
+    "service-04": {
+      "type": "object"
+    },
+    "service-05": {
+      "type": "object"
+    },
+    "service-06": {
+      "type": "object"
+    },
+    "service-07": {
+      "type": "object"
+    },
+    "service-08": {
+      "type": "object"
+    },
+    "service-09": {
+      "type": "object"
+    },
+    "service-10": {
+      "type": "object"
+    },
+    "service-11": {
+      "type": "object"
+    },
+    "service-12": {
+      "type": "object"
+    },
+    "service-13": {
+      "type": "object"
+    },
+    "service-14": {
+      "type": "object"
+    },
+    "service-15": {
+      "type": "object"
+    },
+    "service-16": {
+      "type": "object"
+    },
+    "service-17": {
+      "type": "object"
+    },
+    "service-18": {
+      "type": "object"
+    },
+    "service-19": {
+      "type": "object"
+    },
+    "service-20": {
+      "type": "object"
+    },
+    "service-21": {
+      "type": "object"
+    },
+    "service-22": {
+      "type": "object"
+    },
+    "service-23": {
+      "type": "object"
+    },
+    "service-24": {
+      "type": "object"
+    },
+    "service-25": {
+      "type": "object"
+    },
+    "service-26": {
+      "type": "object"
+    },
+    "service-27": {
+      "type": "object"
+    },
+    "service-28": {
+      "type": "object"
+    },
+    "service-29": {
+      "type": "object"
+    },
+    "service-30": {
+      "type": "object"
+    },
+    "service-31": {
+      "type": "object"
+    },
+    "service-32": {
+      "type": "object"
+    },
+    "service-33": {
+      "type": "object"
+    },
+    "service-34": {
+      "type": "object"
+    },
+    "service-35": {
+      "type": "object"
+    },
+    "service-36": {
+      "type": "object"
+    },
+    "service-37": {
+      "type": "object"
+    },
+    "service-38": {
+      "type": "object"
+    },
+    "service-39": {
+      "type": "object"
+    },
+    "service-40": {
+      "type": "object"
+    },
+    "service-41": {
+      "type": "object"
+    },
+    "service-42": {
+      "type": "object"
+    },
+    "service-43": {
+      "type": "object"
+    },
+    "service-44": {
+      "type": "object"
+    },
+    "service-45": {
+      "type": "object"
+    },
+    "service-46": {
+      "type": "object"
+    },
+    "service-47": {
+      "type": "object"
+    },
+    "service-48": {
+      "type": "object"
+    },
+    "service-49": {
+      "type": "object"
+    },
+    "service-50": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "global",
+    "platform",
+    "routing",
+    "notifications",
+    "observability",
+    "security",
+    "integrations"
+  ],
+  "additionalProperties": false
+}

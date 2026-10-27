@@ -1,0 +1,5 @@
+apiVersion: v2
+name: service-16
+description: service-16 configuration-only subchart
+type: application
+version: 0.2.0
