@@ -1,0 +1,3 @@
+# Shared defaults come from the repository root values.yaml.
+# Argo CD loads those first, followed by the tenant values file.
+{}

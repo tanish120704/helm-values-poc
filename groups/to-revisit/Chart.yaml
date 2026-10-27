@@ -1,0 +1,36 @@
+apiVersion: v2
+name: to-revisit
+description: Direct Helm entry point for the to-revisit service group
+type: application
+version: 0.1.0
+dependencies:
+- name: service-41
+  version: 0.2.0
+  repository: file://../../charts/service-41
+- name: service-42
+  version: 0.2.0
+  repository: file://../../charts/service-42
+- name: service-43
+  version: 0.2.0
+  repository: file://../../charts/service-43
+- name: service-44
+  version: 0.2.0
+  repository: file://../../charts/service-44
+- name: service-45
+  version: 0.2.0
+  repository: file://../../charts/service-45
+- name: service-46
+  version: 0.2.0
+  repository: file://../../charts/service-46
+- name: service-47
+  version: 0.2.0
+  repository: file://../../charts/service-47
+- name: service-48
+  version: 0.2.0
+  repository: file://../../charts/service-48
+- name: service-49
+  version: 0.2.0
+  repository: file://../../charts/service-49
+- name: service-50
+  version: 0.2.0
+  repository: file://../../charts/service-50

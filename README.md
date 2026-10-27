@@ -102,8 +102,38 @@ resulting files and commit both source and output. Tenant overrides are edited
 only in the GitOps repo. Verification does not import the generator: it reads
 the rendered resources and actual chart values independently.
 
-This deliberately retains one umbrella Application per tenant to exercise
-configuration merging. It does not implement deployment groups, release cohorts,
-or hundreds of tenants. Both repositories still track `main`, so shared chart
-changes affect all tenants. Split independently released groups and pin chart
-versions before adopting the production architecture discussed for larger scale.
+## Direct Helm group entry points
+
+`groups/` adds four small umbrella charts without moving or changing any existing
+subcharts, root templates, or root values. Group dependencies reference the
+existing service charts through local `file://../../charts/<service>` paths.
+Standard `Chart.lock` files pin dependency metadata. Argo CD builds missing local
+dependencies automatically; for local use, run `helm dependency build` first.
+
+| Group | Services | Root templates |
+| --- | --- | --- |
+| foundation | service-a, service-b, service-03 through service-12 | All six |
+| core-platform | service-13 through service-25 | None |
+| product-services | service-26 through service-40 | None |
+| to-revisit | service-41 through service-50 | None |
+
+Foundation uses repository-local symbolic links to the six existing root
+templates. Their original files remain the single source of template content.
+The original root chart remains usable for a complete 56-resource render.
+
+```sh
+helm dependency build groups/foundation
+helm template tenant-b groups/foundation -f values.yaml \
+  -f ../argocd-gitops-poc/tenants/tenant-b/values.yaml
+```
+
+The GitOps repository's parent Helm chart renders four child Applications. Each
+child renders its own group directly in Argo CD, loading root values followed by
+tenant values. There is no pre-rendered-manifest pipeline. Services retain the
+same values keys and Kubernetes resource names. A service change can change its
+group's rendered output; shared values used by several groups may affect all of
+them. Shared repositories can cause refreshes without manifest changes or syncs.
+
+Both repos track `main` for this POC; production version promotion is a separate
+concern. Group membership is defined by these four dependency lists, not a
+second service catalog or a custom generation tool.

@@ -2,3 +2,4 @@
 charts/*.tgz
 .venv/
 __pycache__/
+groups/*/charts/

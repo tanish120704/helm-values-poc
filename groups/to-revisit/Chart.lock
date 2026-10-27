@@ -1,0 +1,33 @@
+dependencies:
+- name: service-41
+  repository: file://../../charts/service-41
+  version: 0.2.0
+- name: service-42
+  repository: file://../../charts/service-42
+  version: 0.2.0
+- name: service-43
+  repository: file://../../charts/service-43
+  version: 0.2.0
+- name: service-44
+  repository: file://../../charts/service-44
+  version: 0.2.0
+- name: service-45
+  repository: file://../../charts/service-45
+  version: 0.2.0
+- name: service-46
+  repository: file://../../charts/service-46
+  version: 0.2.0
+- name: service-47
+  repository: file://../../charts/service-47
+  version: 0.2.0
+- name: service-48
+  repository: file://../../charts/service-48
+  version: 0.2.0
+- name: service-49
+  repository: file://../../charts/service-49
+  version: 0.2.0
+- name: service-50
+  repository: file://../../charts/service-50
+  version: 0.2.0
+digest: sha256:ed474f5c7990e23d991b8d35188ca6ca1b19525a0812918e4ad6f3604b8c35a0
+generated: "2026-10-28T03:16:54.214269+05:30"
