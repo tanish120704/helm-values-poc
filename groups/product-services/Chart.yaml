@@ -1,5 +1,51 @@
 apiVersion: v2
 name: product-services
-description: product-services service Applications
+description: Direct Helm entry point for the product-services service group
 type: application
-version: 0.2.0
+version: 0.1.0
+dependencies:
+- name: service-26
+  version: 0.2.0
+  repository: file://../../charts/service-26
+- name: service-27
+  version: 0.2.0
+  repository: file://../../charts/service-27
+- name: service-28
+  version: 0.2.0
+  repository: file://../../charts/service-28
+- name: service-29
+  version: 0.2.0
+  repository: file://../../charts/service-29
+- name: service-30
+  version: 0.2.0
+  repository: file://../../charts/service-30
+- name: service-31
+  version: 0.2.0
+  repository: file://../../charts/service-31
+- name: service-32
+  version: 0.2.0
+  repository: file://../../charts/service-32
+- name: service-33
+  version: 0.2.0
+  repository: file://../../charts/service-33
+- name: service-34
+  version: 0.2.0
+  repository: file://../../charts/service-34
+- name: service-35
+  version: 0.2.0
+  repository: file://../../charts/service-35
+- name: service-36
+  version: 0.2.0
+  repository: file://../../charts/service-36
+- name: service-37
+  version: 0.2.0
+  repository: file://../../charts/service-37
+- name: service-38
+  version: 0.2.0
+  repository: file://../../charts/service-38
+- name: service-39
+  version: 0.2.0
+  repository: file://../../charts/service-39
+- name: service-40
+  version: 0.2.0
+  repository: file://../../charts/service-40
