@@ -163,6 +163,3 @@ verifies annotations and resource application order only. Real service startup
 ordering requires Deployments and readiness probes that express actual readiness;
 services still need runtime retries when dependencies fail later.
 
-`foundationConfigWaves` controls wave annotations on the six standalone Foundation
-configuration resources. It defaults to `true` (wave `-1`); `false` omits those
-annotations. Service ordering is configured separately through `syncWave`.

@@ -450,9 +450,6 @@
       ],
       "additionalProperties": false
     },
-    "foundationConfigWaves": {
-      "type": "boolean"
-    },
     "service-a": {
       "type": "object"
     },
