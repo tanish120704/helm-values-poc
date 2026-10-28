@@ -298,6 +298,49 @@
     "syncWave": {
       "type": "integer",
       "minimum": 0
+    },
+    "processing": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "maxInFlight": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "allowedQueues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "backoff": {
+          "type": "object",
+          "properties": {
+            "initialSeconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxSeconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "initialSeconds",
+            "maxSeconds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "enabled",
+        "maxInFlight",
+        "allowedQueues",
+        "backoff"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -310,7 +353,8 @@
     "retry",
     "tenantConfig",
     "integrations",
-    "syncWave"
+    "syncWave",
+    "processing"
   ],
   "additionalProperties": false
 }

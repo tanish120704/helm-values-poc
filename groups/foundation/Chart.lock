@@ -4,7 +4,7 @@ dependencies:
   version: 0.3.0
 - name: service-b
   repository: file://../../charts/service-b
-  version: 0.3.0
+  version: 0.4.0
 - name: service-03
   repository: file://../../charts/service-03
   version: 0.3.0
@@ -35,5 +35,5 @@ dependencies:
 - name: service-12
   repository: file://../../charts/service-12
   version: 0.3.0
-digest: sha256:315f97761532fb7c04556f121a68df45f42d7d9cebb7665ffc6c2645b4a2d46b
-generated: "2026-10-28T04:20:08.473873+05:30"
+digest: sha256:6eff36ca8b2e2cfbb9537077c3a34182a22afec6d69d504189876ccfbd76deee
+generated: "2026-10-29T05:18:05.634224+05:30"

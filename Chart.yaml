@@ -2,13 +2,13 @@ apiVersion: v2
 name: helm-values-poc
 description: 50 services and six umbrella configurations with layered tenant overrides
 type: application
-version: 0.5.2
+version: 0.6.0
 dependencies:
 - name: service-a
   version: 0.3.0
   repository: file://charts/service-a
 - name: service-b
-  version: 0.3.0
+  version: 0.4.0
   repository: file://charts/service-b
 - name: service-03
   version: 0.3.0

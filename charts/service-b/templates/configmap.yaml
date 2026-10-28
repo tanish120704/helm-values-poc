@@ -13,5 +13,6 @@ data:
   logLevel: {{ .Values.settings.logLevel | quote }}
   tenantName: {{ .Values.global.tenant.name | quote }}
   tenantDomain: {{ .Values.global.tenant.domain | quote }}
+  processing.json: {{ .Values.processing | toJson | quote }}
   config.json: |
-    {{- dict "tenant" .Values.global.tenant "message" .Values.message "settings" .Values.settings "runtime" .Values.runtime "resources" .Values.resources "features" .Values.features "retry" .Values.retry "tenantConfig" .Values.tenantConfig "integrations" .Values.integrations | toPrettyJson | nindent 4 }}
+    {{- dict "tenant" .Values.global.tenant "message" .Values.message "settings" .Values.settings "runtime" .Values.runtime "resources" .Values.resources "features" .Values.features "retry" .Values.retry "tenantConfig" .Values.tenantConfig "integrations" .Values.integrations "processing" .Values.processing | toPrettyJson | nindent 4 }}

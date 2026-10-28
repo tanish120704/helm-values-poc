@@ -53,3 +53,11 @@ integrations:
     enabled: true
     format: json
 syncWave: 0
+processing:
+  enabled: true
+  maxInFlight: 16
+  allowedQueues:
+  - default
+  backoff:
+    initialSeconds: 1
+    maxSeconds: 30

@@ -115,6 +115,10 @@ service-b:
     tags:
     - shared
     - poc
+  processing:
+    maxInFlight: 32
+    backoff:
+      maxSeconds: 60
 service-03:
   message: service-03 configured by parent chart
   settings:

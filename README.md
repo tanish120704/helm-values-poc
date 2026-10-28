@@ -163,3 +163,38 @@ verifies annotations and resource application order only. Real service startup
 ordering requires Deployments and readiness probes that express actual readiness;
 services still need runtime retries when dependencies fail later.
 
+
+## Service B processing configuration (feature branch)
+
+Service B now renders a typed `processing` block into `config.json` and
+`processing.json`. This is a configuration-only test; no worker implementation
+or application traffic is provisioned by this POC.
+
+Subchart defaults are `enabled: true`, `maxInFlight: 16`,
+`allowedQueues: [default]`, and `backoff: {initialSeconds: 1, maxSeconds: 30}`.
+Root defaults override `maxInFlight` to `32` and `backoff.maxSeconds` to `60`.
+A tenant may override only the fields it needs. Explicit `false`, `0`, and `[]`
+are retained. Lists replace the inherited list; partial maps merge.
+An omitted override inherits defaults; an explicit null required value is rejected.
+
+Example tenant override:
+
+```yaml
+service-b:
+  processing:
+    enabled: false
+    maxInFlight: 0
+    allowedQueues: []
+    backoff:
+      initialSeconds: 0
+```
+
+This inherits `backoff.maxSeconds: 60`. The zero and disabled values exercise
+configuration rendering; this POC does not assign runtime semantics to them.
+
+Run `python scripts/verify_processing.py --helm /path/to/helm
+--tenant-values /path/to/tenant/values.yaml` after building Foundation dependencies.
+The verifier covers merged defaults, false/zero/empty-list overrides, list replacement,
+partial nested maps, override removal, and rejection of malformed values.
+The previous chart schema rejects this new setting, so select the feature chart
+revision and wait for reconciliation before adding the tenant override.
