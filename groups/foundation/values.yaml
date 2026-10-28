@@ -1,4 +1,4 @@
-# Disable only when preserving legacy annotation metadata during migration.
+# Controls wave annotations on Foundation standalone configuration resources.
 foundationConfigWaves: true
 # Shared internal order for every tenant Foundation Application.
 # Configuration resources use wave -1; services follow in waves 0-11.
